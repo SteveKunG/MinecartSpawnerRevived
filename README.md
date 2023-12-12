@@ -6,7 +6,7 @@ Support with Minecraft 1.20.x for Fabric (Quilt maybe?)~/Forge~ (Soon)
 ~Download on [Modrinth](https://modrinth.com/mod/minecart-spawner-revived)/[CurseForge](https://curseforge.com/minecraft/mc-mods/minecart-spawner-revived)~ (Soon)
 
 ### List of bug fixes
-- When entity recreated from a packet, send a request SpawnData packet to the server
+- Send a request `SpawnData` packet to the server when an entity is created on the client side.
 - Re-added mob renderer for the Spawner Minecart.
     - Resolves [MC-65065](https://bugs.mojang.com/browse/MC-65065).
 - Fix Spawner Minecart spawner particles position. [MC-66894](https://bugs.mojang.com/browse/MC-66894).
