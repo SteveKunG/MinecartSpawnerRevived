@@ -35,7 +35,7 @@ public class MinecartSpawnerRevived
 
     public static void init()
     {
-        LOGGER.info("MinecartSpawnerRevived loaded, #PlsAddMinecartSpawnerItem!");
+        LOGGER.info("MinecartSpawnerRevived loaded, #PleaseAddSpawnerMinecartItem!");
         ServerPlayNetworking.registerGlobalReceiver(MinecartSpawnerRevived.REQUEST_SPAWNDATA, MinecartSpawnerRevived::requestSpawnData);
     }
 
