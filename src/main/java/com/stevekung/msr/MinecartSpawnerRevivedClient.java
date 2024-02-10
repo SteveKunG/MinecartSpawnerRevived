@@ -3,12 +3,8 @@ package com.stevekung.msr;
 import java.util.function.Function;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.vehicle.MinecartSpawner;
 import net.minecraft.world.level.BaseSpawner;
@@ -18,23 +14,23 @@ public class MinecartSpawnerRevivedClient
 {
     public static void init()
     {
-        ClientPlayNetworking.registerGlobalReceiver(MinecartSpawnerRevived.SEND_SPAWNDATA, MinecartSpawnerRevivedClient::setSpawnerDisplay);
+        PayloadTypeRegistry.playS2C().register(SendSpawnDataPacket.TYPE, SendSpawnDataPacket.CODEC);
+
+        ClientPlayNetworking.registerGlobalReceiver(SendSpawnDataPacket.TYPE, MinecartSpawnerRevivedClient::setSpawnerDisplay);
     }
 
     public static void sendSpawnDataRequest(int entityId)
     {
-        var buff = PacketByteBufs.create();
-        buff.writeVarInt(entityId);
-        ClientPlayNetworking.send(MinecartSpawnerRevived.REQUEST_SPAWNDATA, buff);
+        ClientPlayNetworking.send(new RequestSpawnDataPacket(entityId));
     }
 
-    public static void setSpawnerDisplay(Minecraft minecraft, ClientPacketListener listener, FriendlyByteBuf buf, PacketSender responseSender)
+    public static void setSpawnerDisplay(SendSpawnDataPacket packet, ClientPlayNetworking.Context context)
     {
-        var entityId = buf.readInt();
-        var compoundTag = buf.readNbt();
-        var level = minecraft.level;
+        var entityId = packet.entityId();
+        var compoundTag = packet.spawnDataTag();
+        var level = context.client().level;
 
-        minecraft.execute(() ->
+        context.client().execute(() ->
         {
             if (level != null)
             {

@@ -4,16 +4,12 @@ import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
 
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.entity.vehicle.MinecartSpawner;
 import net.minecraft.world.level.BaseSpawner;
 import net.minecraft.world.level.SpawnData;
@@ -36,15 +32,18 @@ public class MinecartSpawnerRevived
     public static void init()
     {
         LOGGER.info("MinecartSpawnerRevived loaded, #PleaseAddSpawnerMinecartItem!");
-        ServerPlayNetworking.registerGlobalReceiver(MinecartSpawnerRevived.REQUEST_SPAWNDATA, MinecartSpawnerRevived::requestSpawnData);
+        PayloadTypeRegistry.playC2S().register(RequestSpawnDataPacket.TYPE, RequestSpawnDataPacket.CODEC);
+
+        ServerPlayNetworking.registerGlobalReceiver(RequestSpawnDataPacket.TYPE, MinecartSpawnerRevived::requestSpawnData);
     }
 
-    public static void requestSpawnData(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf buf, PacketSender responseSender)
+    public static void requestSpawnData(RequestSpawnDataPacket packet, ServerPlayNetworking.Context context)
     {
-        var entityId = buf.readVarInt();
+        var entityId = packet.entityId();
+        var player = context.player();
 
         // Make sure to run on the server thread because we use level.getRandom() to get SpawnData from the server side. This will prevent "Accessing LegacyRandomSource from multiple threads" error.
-        server.execute(() ->
+        player.getServer().execute(() ->
         {
             var spawner = (MinecartSpawner)player.level().getEntity(entityId);
 
@@ -64,11 +63,8 @@ public class MinecartSpawnerRevived
             return;
         }
 
-        var packetByteBuf = PacketByteBufs.create();
-        packetByteBuf.writeInt(entityId);
         var compound = new CompoundTag();
         compound.put(BaseSpawner.SPAWN_DATA_TAG, SpawnData.CODEC.encodeStart(NbtOps.INSTANCE, spawnData).result().orElseThrow(() -> new IllegalStateException("Invalid SpawnData")));
-        packetByteBuf.writeNbt(compound);
-        ServerPlayNetworking.send(player, MinecartSpawnerRevived.SEND_SPAWNDATA, packetByteBuf);
+        ServerPlayNetworking.send(player, new SendSpawnDataPacket(entityId, compound));
     }
 }
