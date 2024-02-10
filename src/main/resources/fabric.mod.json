@@ -25,7 +25,7 @@
     "depends": {
         "fabricloader": "*",
         "fabric-api": "*",
-        "minecraft": ">=1.20.3"
+        "minecraft": "1.20.4"
     },
     "mixins": [
         "mixins.msr.json"

@@ -34,17 +34,20 @@ public class MinecartSpawnerRevivedClient
         var compoundTag = buf.readNbt();
         var level = minecraft.level;
 
-        if (level != null)
+        minecraft.execute(() ->
         {
-            var spawner = (MinecartSpawner)level.getEntity(entityId);
-
-            if (spawner == null || compoundTag == null)
+            if (level != null)
             {
-                return;
-            }
+                var spawner = (MinecartSpawner)level.getEntity(entityId);
 
-            var spawnData = SpawnData.CODEC.parse(NbtOps.INSTANCE, compoundTag.getCompound(BaseSpawner.SPAWN_DATA_TAG)).resultOrPartial(string -> MinecartSpawnerRevived.LOGGER.warn("Invalid SpawnData: {}", string)).orElseGet(SpawnData::new);
-            spawner.getSpawner().displayEntity = EntityType.loadEntityRecursive(spawnData.entityToSpawn(), level, Function.identity());
-        }
+                if (spawner == null || compoundTag == null)
+                {
+                    return;
+                }
+
+                var spawnData = SpawnData.CODEC.parse(NbtOps.INSTANCE, compoundTag.getCompound(BaseSpawner.SPAWN_DATA_TAG)).resultOrPartial(string -> MinecartSpawnerRevived.LOGGER.warn("Invalid SpawnData: {}", string)).orElseGet(SpawnData::new);
+                spawner.getSpawner().displayEntity = EntityType.loadEntityRecursive(spawnData.entityToSpawn(), level, Function.identity());
+            }
+        });
     }
 }
