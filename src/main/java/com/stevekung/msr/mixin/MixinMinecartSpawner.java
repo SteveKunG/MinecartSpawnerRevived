@@ -52,7 +52,7 @@ public abstract class MixinMinecartSpawner extends AbstractMinecart
 
         if (itemStack.getItem() instanceof SpawnEggItem spawnEgg)
         {
-            var entityType = spawnEgg.getType(itemStack.getTag());
+            var entityType = spawnEgg.getType(itemStack);
             thisEntity.getSpawner().setEntityId(entityType, this.level(), this.level().getRandom(), this.blockPosition());
             this.level().gameEvent(player, GameEvent.ENTITY_INTERACT, this.blockPosition());
             itemStack.shrink(1);
