@@ -1,0 +1,36 @@
+{
+    "schemaVersion": 1,
+    "id": "minecartspawnerrevived",
+    "version": "${version}",
+    "name": "Minecart Spawner Revived",
+    "description": "Reviving Minecart Spawner with care and bug fixes!",
+    "authors": [
+        "SteveKunG"
+    ],
+    "icon": "logo.png",
+    "contact": {
+        "homepage": "https://modrinth.com/mod/minecart-spawner-revived",
+        "sources": "https://github.com/SteveKunG/MinecartSpawnerRevived",
+        "issues": "https://github.com/SteveKunG/MinecartSpawnerRevived/issues"
+    },
+    "license": "MIT",
+    "environment": "*",
+    "entrypoints": {
+        "main": [
+            "com.stevekung.minecartspawnerrevived.fabric.MinecartSpawnerRevivedFabric::init"
+        ],
+        "client": [
+            "com.stevekung.minecartspawnerrevived.fabric.MinecartSpawnerRevivedClientFabric::init"
+        ]
+    },
+    "depends": {
+        "fabric-api": "*",
+        "fabricloader": ">=0.15",
+        "minecraft": "1.20.4"
+    },
+    "mixins": [
+        "mixins.minecartspawnerrevived.json",
+        "mixins.minecartspawnerrevived_fabric.json"
+    ],
+    "accessWidener": "minecartspawnerrevived.accesswidener"
+}
