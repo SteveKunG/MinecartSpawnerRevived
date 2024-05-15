@@ -1,17 +1,7 @@
 package com.stevekung.minecartspawnerrevived.forge;
 
-import java.util.function.Function;
-import java.util.function.Supplier;
-
-import com.stevekung.minecartspawnerrevived.MinecartSpawnerRevived;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.vehicle.MinecartSpawner;
-import net.minecraft.world.level.BaseSpawner;
-import net.minecraft.world.level.SpawnData;
-import net.minecraftforge.network.NetworkEvent;
 
 public class SendSpawnDataPacket
 {
@@ -26,30 +16,23 @@ public class SendSpawnDataPacket
 
     public SendSpawnDataPacket(FriendlyByteBuf buf)
     {
-        entityId = buf.readInt();
-        compoundTag = buf.readNbt();
+        this.entityId = buf.readInt();
+        this.compoundTag = buf.readNbt();
     }
 
     public void toBytes(FriendlyByteBuf buf)
     {
-        buf.writeInt(entityId);
-        buf.writeNbt(compoundTag);
+        buf.writeInt(this.entityId);
+        buf.writeNbt(this.compoundTag);
     }
 
-    public void handle(Supplier<NetworkEvent.Context> ctx)
+    public int getEntityId()
     {
-        ctx.get().enqueueWork(() ->
-        {
-            var level = ctx.get().getSender().level();
-            var spawner = (MinecartSpawner) level.getEntity(entityId);
+        return this.entityId;
+    }
 
-            if (spawner == null || compoundTag == null)
-            {
-                return;
-            }
-
-            var spawnData = SpawnData.CODEC.parse(NbtOps.INSTANCE, compoundTag.getCompound(BaseSpawner.SPAWN_DATA_TAG)).resultOrPartial(string -> MinecartSpawnerRevived.LOGGER.warn("Invalid SpawnData: {}", string)).orElseGet(SpawnData::new);
-            spawner.getSpawner().displayEntity = EntityType.loadEntityRecursive(spawnData.entityToSpawn(), level, Function.identity());
-        });
+    public CompoundTag getCompoundTag()
+    {
+        return this.compoundTag;
     }
 }

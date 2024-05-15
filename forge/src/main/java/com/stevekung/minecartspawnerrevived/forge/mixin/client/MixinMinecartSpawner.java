@@ -6,6 +6,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import com.stevekung.minecartspawnerrevived.forge.MinecartSpawnerRevivedForge;
 import com.stevekung.minecartspawnerrevived.forge.RequestSpawnDataPacket;
+import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
@@ -27,7 +28,10 @@ public abstract class MixinMinecartSpawner extends AbstractMinecart
     @Inject(method = "readAdditionalSaveData", at = @At("TAIL"))
     private void msr$resendSpawnDataRequestOnLoad(CompoundTag compound, CallbackInfo info)
     {
-        MinecartSpawnerRevivedForge.sendToServer(new RequestSpawnDataPacket(this.getId()));
+        if (Minecraft.getInstance().getConnection() != null)
+        {
+            MinecartSpawnerRevivedForge.sendToServer(new RequestSpawnDataPacket(this.getId()));
+        }
     }
 
     /**
