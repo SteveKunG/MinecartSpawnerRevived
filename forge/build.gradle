@@ -14,14 +14,6 @@ loom {
             }
         }
     }
-
-    forge {
-        mixinConfig "mixins.${archives_base_name}_forge.json"
-
-        mixin {
-            defaultRefmapName = "mixins.${archives_base_name}_forge.refmap.json"
-        }
-    }
 }
 
 String fileName = "${archives_base_name}-mc${minecraft_version}"
