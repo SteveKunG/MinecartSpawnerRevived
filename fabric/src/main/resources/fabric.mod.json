@@ -29,8 +29,7 @@
         "minecraft": "1.20.4"
     },
     "mixins": [
-        "mixins.minecartspawnerrevived.json",
-        "mixins.minecartspawnerrevived_fabric.json"
+        "mixins.minecartspawnerrevived.json"
     ],
     "accessWidener": "minecartspawnerrevived.accesswidener"
 }

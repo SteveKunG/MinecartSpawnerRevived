@@ -22,12 +22,12 @@ public class RequestSpawnDataPacket
 
     public RequestSpawnDataPacket(FriendlyByteBuf buf)
     {
-        entityId = buf.readInt();
+        this.entityId = buf.readInt();
     }
 
     public void toBytes(FriendlyByteBuf buf)
     {
-        buf.writeInt(entityId);
+        buf.writeInt(this.entityId);
     }
 
     public void handle(Supplier<NetworkEvent.Context> ctx)
@@ -35,12 +35,12 @@ public class RequestSpawnDataPacket
         ctx.get().enqueueWork(() ->
         {
             var player = ctx.get().getSender();
-            var spawner = (MinecartSpawner) player.level().getEntity(entityId);
+            var spawner = (MinecartSpawner) player.level().getEntity(this.entityId);
 
             if (spawner != null)
             {
                 var level = spawner.level();
-                sendSpawnDataPacket(player, entityId, spawner.getSpawner().getOrCreateNextSpawnData(level, level.getRandom(), spawner.blockPosition()));
+                sendSpawnDataPacket(player, this.entityId, spawner.getSpawner().getOrCreateNextSpawnData(level, level.getRandom(), spawner.blockPosition()));
             }
         });
     }
