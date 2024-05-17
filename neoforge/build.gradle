@@ -1,0 +1,34 @@
+apply from: "https://raw.githubusercontent.com/SteveKunG/GradleScripts/main/architectury/neoforge.gradle"
+
+loom {
+    runs.configureEach {
+        properties project.commonProperties
+        vmArgs project.commonVmArgs
+        vmArgs project.hotswapVmArgs
+    }
+
+    runs {
+        client {
+            if (project.hasProperty("usernameAndUUID")) {
+                programArgs project.usernameAndUUID
+            }
+        }
+    }
+}
+
+String fileName = "${archives_base_name}-mc${minecraft_version}"
+
+shadowJar {
+    configurations = [project.configurations.shadowBundle]
+    archiveClassifier = "dev"
+    archiveVersion = "v${mod_version}"
+    archiveBaseName = fileName
+}
+
+remapJar {
+    inputFile.set shadowJar.archiveFile
+    dependsOn shadowJar
+    archiveClassifier = "neoforge"
+    archiveVersion = "v${mod_version}"
+    archiveBaseName = fileName
+}
