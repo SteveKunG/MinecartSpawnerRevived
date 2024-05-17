@@ -1,7 +1,11 @@
 package com.stevekung.minecartspawnerrevived.forge;
 
+import java.util.function.Supplier;
+
+import com.stevekung.minecartspawnerrevived.client.ClientPacket;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.network.NetworkEvent;
 
 public class SendSpawnDataPacket
 {
@@ -26,13 +30,8 @@ public class SendSpawnDataPacket
         buf.writeNbt(this.compoundTag);
     }
 
-    public int getEntityId()
+    public void handle(Supplier<NetworkEvent.Context> ctx)
     {
-        return this.entityId;
-    }
-
-    public CompoundTag getCompoundTag()
-    {
-        return this.compoundTag;
+        ctx.get().enqueueWork(() -> ClientPacket.setSpawnerDisplay(this.entityId, this.compoundTag));
     }
 }
