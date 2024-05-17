@@ -4,18 +4,20 @@ import com.stevekung.minecartspawnerrevived.MinecartSpawnerRevived;
 import com.stevekung.minecartspawnerrevived.client.ClientPacket;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record SendSpawnDataPacket(int entityId, CompoundTag compoundTag) implements CustomPacketPayload
 {
+    public static final CustomPacketPayload.Type<SendSpawnDataPacket> TYPE = new CustomPacketPayload.Type<>(MinecartSpawnerRevived.SEND_SPAWNDATA);
+    public static final StreamCodec<FriendlyByteBuf, SendSpawnDataPacket> CODEC = CustomPacketPayload.codec(SendSpawnDataPacket::write, SendSpawnDataPacket::new);
+
     public SendSpawnDataPacket(FriendlyByteBuf buffer)
     {
         this(buffer.readInt(), buffer.readNbt());
     }
 
-    @Override
     public void write(FriendlyByteBuf buffer)
     {
         buffer.writeInt(this.entityId);
@@ -23,13 +25,13 @@ public record SendSpawnDataPacket(int entityId, CompoundTag compoundTag) impleme
     }
 
     @Override
-    public ResourceLocation id()
+    public Type<? extends CustomPacketPayload> type()
     {
-        return MinecartSpawnerRevived.SEND_SPAWNDATA;
+        return TYPE;
     }
 
-    public void handle(PlayPayloadContext context)
+    public void handle(IPayloadContext context)
     {
-        context.workHandler().execute(() -> ClientPacket.setSpawnerDisplay(this.entityId, this.compoundTag));
+        context.enqueueWork(() -> ClientPacket.setSpawnerDisplay(this.entityId, this.compoundTag));
     }
 }

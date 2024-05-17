@@ -4,41 +4,41 @@ import com.stevekung.minecartspawnerrevived.MinecartSpawnerRevived;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.vehicle.MinecartSpawner;
 import net.minecraft.world.level.BaseSpawner;
 import net.minecraft.world.level.SpawnData;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record RequestSpawnDataPacket(int entityId) implements CustomPacketPayload
 {
+    public static final CustomPacketPayload.Type<RequestSpawnDataPacket> TYPE = new CustomPacketPayload.Type<>(MinecartSpawnerRevived.REQUEST_SPAWNDATA);
+    public static final StreamCodec<FriendlyByteBuf, RequestSpawnDataPacket> CODEC = CustomPacketPayload.codec(RequestSpawnDataPacket::write, RequestSpawnDataPacket::new);
+
     public RequestSpawnDataPacket(FriendlyByteBuf buffer)
     {
         this(buffer.readInt());
     }
 
-    @Override
     public void write(FriendlyByteBuf buffer)
     {
         buffer.writeInt(this.entityId);
     }
 
     @Override
-    public ResourceLocation id()
+    public Type<? extends CustomPacketPayload> type()
     {
-        return MinecartSpawnerRevived.REQUEST_SPAWNDATA;
+        return TYPE;
     }
 
-    public void handle(PlayPayloadContext context)
+    public void handle(IPayloadContext context)
     {
-        context.workHandler().execute(() ->
+        context.enqueueWork(() ->
         {
-            var optionalPlayer = context.player();
-
-            if (optionalPlayer.isPresent() && optionalPlayer.get() instanceof ServerPlayer player)
+            if (context.player() instanceof ServerPlayer player)
             {
                 var spawner = (MinecartSpawner) player.level().getEntity(this.entityId);
 

@@ -1,15 +1,13 @@
 package com.stevekung.minecartspawnerrevived.fabric;
 
 import com.stevekung.minecartspawnerrevived.MinecartSpawnerRevived;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
+import com.stevekung.minecartspawnerrevived.RequestSpawnDataPacket;
+import com.stevekung.minecartspawnerrevived.SendSpawnDataPacket;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.entity.vehicle.MinecartSpawner;
 import net.minecraft.world.level.BaseSpawner;
 import net.minecraft.world.level.SpawnData;
@@ -19,17 +17,20 @@ public class MinecartSpawnerRevivedFabric
     public static void init()
     {
         MinecartSpawnerRevived.init();
-        ServerPlayNetworking.registerGlobalReceiver(MinecartSpawnerRevived.REQUEST_SPAWNDATA, MinecartSpawnerRevivedFabric::requestSpawnData);
+        PayloadTypeRegistry.playC2S().register(RequestSpawnDataPacket.TYPE, RequestSpawnDataPacket.CODEC);
+
+        ServerPlayNetworking.registerGlobalReceiver(RequestSpawnDataPacket.TYPE, MinecartSpawnerRevivedFabric::requestSpawnData);
     }
 
-    public static void requestSpawnData(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf buf, PacketSender responseSender)
+    public static void requestSpawnData(RequestSpawnDataPacket packet, ServerPlayNetworking.Context context)
     {
-        var entityId = buf.readVarInt();
+        var entityId = packet.entityId();
+        var player = context.player();
 
         // Make sure to run on the server thread because we use level.getRandom() to get SpawnData from the server side. This will prevent "Accessing LegacyRandomSource from multiple threads" error.
-        server.execute(() ->
+        player.getServer().execute(() ->
         {
-            var spawner = (MinecartSpawner)player.level().getEntity(entityId);
+            var spawner = (MinecartSpawner) player.level().getEntity(entityId);
 
             if (spawner != null)
             {
@@ -47,11 +48,8 @@ public class MinecartSpawnerRevivedFabric
             return;
         }
 
-        var packetByteBuf = PacketByteBufs.create();
-        packetByteBuf.writeInt(entityId);
         var compound = new CompoundTag();
         compound.put(BaseSpawner.SPAWN_DATA_TAG, SpawnData.CODEC.encodeStart(NbtOps.INSTANCE, spawnData).result().orElseThrow(() -> new IllegalStateException("Invalid SpawnData")));
-        packetByteBuf.writeNbt(compound);
-        ServerPlayNetworking.send(player, MinecartSpawnerRevived.SEND_SPAWNDATA, packetByteBuf);
+        ServerPlayNetworking.send(player, new SendSpawnDataPacket(entityId, compound));
     }
 }

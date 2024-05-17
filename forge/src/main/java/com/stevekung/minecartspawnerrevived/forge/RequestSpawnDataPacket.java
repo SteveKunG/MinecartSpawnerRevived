@@ -1,11 +1,9 @@
 package com.stevekung.minecartspawnerrevived.forge;
 
-import com.stevekung.minecartspawnerrevived.MinecartSpawnerRevived;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.vehicle.MinecartSpawner;
 import net.minecraft.world.level.BaseSpawner;
@@ -26,16 +24,15 @@ public class RequestSpawnDataPacket implements CustomPacketPayload
         this.entityId = buffer.readInt();
     }
 
-    @Override
     public void write(FriendlyByteBuf buffer)
     {
         buffer.writeInt(this.entityId);
     }
 
     @Override
-    public ResourceLocation id()
+    public Type<? extends CustomPacketPayload> type()
     {
-        return MinecartSpawnerRevived.REQUEST_SPAWNDATA;
+        return com.stevekung.minecartspawnerrevived.RequestSpawnDataPacket.TYPE;
     }
 
     public void handle(CustomPayloadEvent.Context context)

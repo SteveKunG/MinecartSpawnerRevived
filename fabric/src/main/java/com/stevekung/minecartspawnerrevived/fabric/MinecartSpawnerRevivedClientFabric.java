@@ -1,32 +1,27 @@
 package com.stevekung.minecartspawnerrevived.fabric;
 
-import com.stevekung.minecartspawnerrevived.MinecartSpawnerRevived;
+import com.stevekung.minecartspawnerrevived.RequestSpawnDataPacket;
+import com.stevekung.minecartspawnerrevived.SendSpawnDataPacket;
 import com.stevekung.minecartspawnerrevived.client.ClientPacket;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientPacketListener;
-import net.minecraft.network.FriendlyByteBuf;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 
 public class MinecartSpawnerRevivedClientFabric
 {
     public static void init()
     {
-        ClientPlayNetworking.registerGlobalReceiver(MinecartSpawnerRevived.SEND_SPAWNDATA, MinecartSpawnerRevivedClientFabric::setSpawnerDisplay);
+        PayloadTypeRegistry.playS2C().register(SendSpawnDataPacket.TYPE, SendSpawnDataPacket.CODEC);
+
+        ClientPlayNetworking.registerGlobalReceiver(SendSpawnDataPacket.TYPE, MinecartSpawnerRevivedClientFabric::setSpawnerDisplay);
     }
 
     public static void sendSpawnDataRequest(int entityId)
     {
-        var buff = PacketByteBufs.create();
-        buff.writeVarInt(entityId);
-        ClientPlayNetworking.send(MinecartSpawnerRevived.REQUEST_SPAWNDATA, buff);
+        ClientPlayNetworking.send(new RequestSpawnDataPacket(entityId));
     }
 
-    public static void setSpawnerDisplay(Minecraft minecraft, ClientPacketListener listener, FriendlyByteBuf buf, PacketSender responseSender)
+    public static void setSpawnerDisplay(SendSpawnDataPacket packet, ClientPlayNetworking.Context context)
     {
-        var entityId = buf.readInt();
-        var compoundTag = buf.readNbt();
-        ClientPacket.setSpawnerDisplay(entityId, compoundTag);
+        ClientPacket.setSpawnerDisplay(packet.entityId(), packet.spawnDataTag());
     }
 }
