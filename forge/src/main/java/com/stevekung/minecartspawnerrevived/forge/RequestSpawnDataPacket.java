@@ -1,17 +1,18 @@
 package com.stevekung.minecartspawnerrevived.forge;
 
-import java.util.function.Supplier;
-
+import com.stevekung.minecartspawnerrevived.MinecartSpawnerRevived;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.vehicle.MinecartSpawner;
 import net.minecraft.world.level.BaseSpawner;
 import net.minecraft.world.level.SpawnData;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.event.network.CustomPayloadEvent;
 
-public class RequestSpawnDataPacket
+public class RequestSpawnDataPacket implements CustomPacketPayload
 {
     private final int entityId;
 
@@ -20,21 +21,28 @@ public class RequestSpawnDataPacket
         this.entityId = entityId;
     }
 
-    public RequestSpawnDataPacket(FriendlyByteBuf buf)
+    public RequestSpawnDataPacket(FriendlyByteBuf buffer)
     {
-        this.entityId = buf.readInt();
+        this.entityId = buffer.readInt();
     }
 
-    public void toBytes(FriendlyByteBuf buf)
+    @Override
+    public void write(FriendlyByteBuf buffer)
     {
-        buf.writeInt(this.entityId);
+        buffer.writeInt(this.entityId);
     }
 
-    public void handle(Supplier<NetworkEvent.Context> ctx)
+    @Override
+    public ResourceLocation id()
     {
-        ctx.get().enqueueWork(() ->
+        return MinecartSpawnerRevived.REQUEST_SPAWNDATA;
+    }
+
+    public void handle(CustomPayloadEvent.Context context)
+    {
+        context.enqueueWork(() ->
         {
-            var player = ctx.get().getSender();
+            var player = context.getSender();
             var spawner = (MinecartSpawner) player.level().getEntity(this.entityId);
 
             if (spawner != null)

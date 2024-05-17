@@ -6,16 +6,17 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.network.NetworkDirection;
-import net.minecraftforge.network.NetworkRegistry;
-import net.minecraftforge.network.simple.SimpleChannel;
+import net.minecraftforge.network.Channel;
+import net.minecraftforge.network.ChannelBuilder;
+import net.minecraftforge.network.PacketDistributor;
+import net.minecraftforge.network.SimpleChannel;
 
 @Mod(MinecartSpawnerRevived.MOD_ID)
 public class MinecartSpawnerRevivedForge
 {
-    private static final String PROTOCOL_VERSION = "1";
+    private static final int PROTOCOL_VERSION = 1;
     private static int ID = 0;
-    public static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(new ResourceLocation(MinecartSpawnerRevived.MOD_ID, "main"), () -> PROTOCOL_VERSION, PROTOCOL_VERSION::equals, PROTOCOL_VERSION::equals);
+    public static final SimpleChannel INSTANCE = ChannelBuilder.named(new ResourceLocation(MinecartSpawnerRevived.MOD_ID, "main")).clientAcceptedVersions(Channel.VersionTest.exact(PROTOCOL_VERSION)).serverAcceptedVersions(Channel.VersionTest.exact(PROTOCOL_VERSION)).networkProtocolVersion(PROTOCOL_VERSION).simpleChannel();
 
     public MinecartSpawnerRevivedForge()
     {
@@ -26,18 +27,18 @@ public class MinecartSpawnerRevivedForge
 
     private void commonSetup(FMLCommonSetupEvent event)
     {
-        INSTANCE.messageBuilder(RequestSpawnDataPacket.class, nextID()).encoder(RequestSpawnDataPacket::toBytes).decoder(RequestSpawnDataPacket::new).consumerMainThread(RequestSpawnDataPacket::handle).add();
-        INSTANCE.messageBuilder(SendSpawnDataPacket.class, nextID()).encoder(SendSpawnDataPacket::toBytes).decoder(SendSpawnDataPacket::new).consumerMainThread(SendSpawnDataPacket::handle).add();
+        INSTANCE.messageBuilder(RequestSpawnDataPacket.class, nextID()).encoder(RequestSpawnDataPacket::write).decoder(RequestSpawnDataPacket::new).consumerMainThread(RequestSpawnDataPacket::handle).add();
+        INSTANCE.messageBuilder(SendSpawnDataPacket.class, nextID()).encoder(SendSpawnDataPacket::write).decoder(SendSpawnDataPacket::new).consumerMainThread(SendSpawnDataPacket::handle).add();
     }
 
     public static void sendToClient(Object packet, ServerPlayer player)
     {
-        INSTANCE.sendTo(packet, player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+        INSTANCE.send(packet, PacketDistributor.PLAYER.with(player));
     }
 
     public static void sendToServer(Object packet)
     {
-        INSTANCE.sendToServer(packet);
+        INSTANCE.send(packet, PacketDistributor.SERVER.noArg());
     }
 
     private static int nextID()

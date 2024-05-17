@@ -1,8 +1,6 @@
 {
   "pack": {
-    "description": {
-      "text": "MinecartSpawnerRevived resources"
-    },
-    "pack_format": 15
+    "description": "MinecartSpawnerRevived resources",
+    "pack_format": 22
   }
 }

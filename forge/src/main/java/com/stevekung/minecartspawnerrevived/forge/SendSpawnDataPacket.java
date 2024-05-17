@@ -1,13 +1,14 @@
 package com.stevekung.minecartspawnerrevived.forge;
 
-import java.util.function.Supplier;
-
+import com.stevekung.minecartspawnerrevived.MinecartSpawnerRevived;
 import com.stevekung.minecartspawnerrevived.client.ClientPacket;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.event.network.CustomPayloadEvent;
 
-public class SendSpawnDataPacket
+public class SendSpawnDataPacket implements CustomPacketPayload
 {
     private final int entityId;
     private final CompoundTag compoundTag;
@@ -18,20 +19,27 @@ public class SendSpawnDataPacket
         this.compoundTag = compoundTag;
     }
 
-    public SendSpawnDataPacket(FriendlyByteBuf buf)
+    public SendSpawnDataPacket(FriendlyByteBuf buffer)
     {
-        this.entityId = buf.readInt();
-        this.compoundTag = buf.readNbt();
+        this.entityId = buffer.readInt();
+        this.compoundTag = buffer.readNbt();
     }
 
-    public void toBytes(FriendlyByteBuf buf)
+    @Override
+    public void write(FriendlyByteBuf buffer)
     {
-        buf.writeInt(this.entityId);
-        buf.writeNbt(this.compoundTag);
+        buffer.writeInt(this.entityId);
+        buffer.writeNbt(this.compoundTag);
     }
 
-    public void handle(Supplier<NetworkEvent.Context> ctx)
+    @Override
+    public ResourceLocation id()
     {
-        ctx.get().enqueueWork(() -> ClientPacket.setSpawnerDisplay(this.entityId, this.compoundTag));
+        return MinecartSpawnerRevived.SEND_SPAWNDATA;
+    }
+
+    public void handle(CustomPayloadEvent.Context context)
+    {
+        context.enqueueWork(() -> ClientPacket.setSpawnerDisplay(this.entityId, this.compoundTag));
     }
 }
