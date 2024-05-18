@@ -1,6 +1,6 @@
 package com.stevekung.minecartspawnerrevived.client.neoforge;
 
-import com.stevekung.minecartspawnerrevived.neoforge.RequestSpawnDataPacket;
+import com.stevekung.minecartspawnerrevived.RequestSpawnDataPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket;
 

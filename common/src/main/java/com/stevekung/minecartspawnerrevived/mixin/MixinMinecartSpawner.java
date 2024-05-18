@@ -32,7 +32,7 @@ public abstract class MixinMinecartSpawner extends AbstractMinecart
         if (!this.level().isClientSide())
         {
             var i = 20 + this.random.nextInt(20) + this.random.nextInt(20);
-            ExperienceOrb.award((ServerLevel)this.level(), this.position(), i);
+            ExperienceOrb.award((ServerLevel) this.level(), this.position(), i);
         }
     }
 

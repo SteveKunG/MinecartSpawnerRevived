@@ -10,12 +10,12 @@ public record SendSpawnDataPacket(int entityId, CompoundTag spawnDataTag) implem
     public static final CustomPacketPayload.Type<SendSpawnDataPacket> TYPE = new CustomPacketPayload.Type<>(MinecartSpawnerRevived.SEND_SPAWNDATA);
     public static final StreamCodec<FriendlyByteBuf, SendSpawnDataPacket> CODEC = CustomPacketPayload.codec(SendSpawnDataPacket::write, SendSpawnDataPacket::new);
 
-    private SendSpawnDataPacket(FriendlyByteBuf buf)
+    public SendSpawnDataPacket(FriendlyByteBuf buf)
     {
         this(buf.readInt(), buf.readNbt());
     }
 
-    private void write(FriendlyByteBuf buf)
+    public void write(FriendlyByteBuf buf)
     {
         buf.writeInt(this.entityId);
         buf.writeNbt(this.spawnDataTag);

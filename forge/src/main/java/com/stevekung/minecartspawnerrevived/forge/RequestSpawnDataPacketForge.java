@@ -1,51 +1,28 @@
 package com.stevekung.minecartspawnerrevived.forge;
 
+import com.stevekung.minecartspawnerrevived.RequestSpawnDataPacket;
+import com.stevekung.minecartspawnerrevived.SendSpawnDataPacket;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.vehicle.MinecartSpawner;
 import net.minecraft.world.level.BaseSpawner;
 import net.minecraft.world.level.SpawnData;
 import net.minecraftforge.event.network.CustomPayloadEvent;
 
-public class RequestSpawnDataPacket implements CustomPacketPayload
+public class RequestSpawnDataPacketForge
 {
-    private final int entityId;
-
-    public RequestSpawnDataPacket(int entityId)
-    {
-        this.entityId = entityId;
-    }
-
-    public RequestSpawnDataPacket(FriendlyByteBuf buffer)
-    {
-        this.entityId = buffer.readInt();
-    }
-
-    public void write(FriendlyByteBuf buffer)
-    {
-        buffer.writeInt(this.entityId);
-    }
-
-    @Override
-    public Type<? extends CustomPacketPayload> type()
-    {
-        return com.stevekung.minecartspawnerrevived.RequestSpawnDataPacket.TYPE;
-    }
-
-    public void handle(CustomPayloadEvent.Context context)
+    public static void handle(RequestSpawnDataPacket packet, CustomPayloadEvent.Context context)
     {
         context.enqueueWork(() ->
         {
             var player = context.getSender();
-            var spawner = (MinecartSpawner) player.level().getEntity(this.entityId);
+            var spawner = (MinecartSpawner) player.level().getEntity(packet.entityId());
 
             if (spawner != null)
             {
                 var level = spawner.level();
-                sendSpawnDataPacket(player, this.entityId, spawner.getSpawner().getOrCreateNextSpawnData(level, level.getRandom(), spawner.blockPosition()));
+                sendSpawnDataPacket(player, packet.entityId(), spawner.getSpawner().getOrCreateNextSpawnData(level, level.getRandom(), spawner.blockPosition()));
             }
         });
     }

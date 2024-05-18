@@ -1,6 +1,8 @@
 package com.stevekung.minecartspawnerrevived.neoforge;
 
 import com.stevekung.minecartspawnerrevived.MinecartSpawnerRevived;
+import com.stevekung.minecartspawnerrevived.RequestSpawnDataPacket;
+import com.stevekung.minecartspawnerrevived.SendSpawnDataPacket;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
@@ -21,7 +23,7 @@ public class MinecartSpawnerRevivedNeoForge
     public void register(RegisterPayloadHandlersEvent event)
     {
         var registrar = event.registrar(MinecartSpawnerRevived.MOD_ID).versioned(PROTOCOL_VERSION).optional();
-        registrar.playToServer(RequestSpawnDataPacket.TYPE, RequestSpawnDataPacket.CODEC, RequestSpawnDataPacket::handle);
-        registrar.playToClient(SendSpawnDataPacket.TYPE, SendSpawnDataPacket.CODEC, SendSpawnDataPacket::handle);
+        registrar.playToServer(RequestSpawnDataPacket.TYPE, RequestSpawnDataPacket.CODEC, RequestSpawnDataPacketNeoForge::handle);
+        registrar.playToClient(SendSpawnDataPacket.TYPE, SendSpawnDataPacket.CODEC, SendSpawnDataPacketNeoForge::handle);
     }
 }

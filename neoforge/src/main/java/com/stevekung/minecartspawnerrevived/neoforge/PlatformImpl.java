@@ -11,7 +11,7 @@ public class PlatformImpl
         {
             for (var serverPlayer : serverLevel.getPlayers(serverPlayer -> serverPlayer.isAlive() && serverPlayer.distanceTo(entity) < 256.0F))
             {
-                RequestSpawnDataPacket.sendSpawnDataPacket(serverPlayer, entity.getId(), entity.getSpawner().getOrCreateNextSpawnData(entity.level(), entity.level().getRandom(), entity.blockPosition()));
+                RequestSpawnDataPacketNeoForge.sendSpawnDataPacket(serverPlayer, entity.getId(), entity.getSpawner().getOrCreateNextSpawnData(entity.level(), entity.level().getRandom(), entity.blockPosition()));
             }
         }
     }

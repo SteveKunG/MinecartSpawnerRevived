@@ -1,6 +1,8 @@
 package com.stevekung.minecartspawnerrevived.forge;
 
 import com.stevekung.minecartspawnerrevived.MinecartSpawnerRevived;
+import com.stevekung.minecartspawnerrevived.RequestSpawnDataPacket;
+import com.stevekung.minecartspawnerrevived.SendSpawnDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.fml.common.Mod;
@@ -27,8 +29,8 @@ public class MinecartSpawnerRevivedForge
 
     private void commonSetup(FMLCommonSetupEvent event)
     {
-        INSTANCE.messageBuilder(RequestSpawnDataPacket.class, nextID()).encoder(RequestSpawnDataPacket::write).decoder(RequestSpawnDataPacket::new).consumerMainThread(RequestSpawnDataPacket::handle).add();
-        INSTANCE.messageBuilder(SendSpawnDataPacket.class, nextID()).encoder(SendSpawnDataPacket::write).decoder(SendSpawnDataPacket::new).consumerMainThread(SendSpawnDataPacket::handle).add();
+        INSTANCE.messageBuilder(RequestSpawnDataPacket.class, nextID()).encoder(RequestSpawnDataPacket::write).decoder(RequestSpawnDataPacket::new).consumerMainThread(RequestSpawnDataPacketForge::handle).add();
+        INSTANCE.messageBuilder(SendSpawnDataPacket.class, nextID()).encoder(SendSpawnDataPacket::write).decoder(SendSpawnDataPacket::new).consumerMainThread(SendSpawnDataPacketForge::handle).add();
     }
 
     public static void sendToClient(Object packet, ServerPlayer player)
