@@ -3,6 +3,7 @@
 .gradle
 .idea
 .vscode
+.architectury-transformer
 bin
 build
 libs
