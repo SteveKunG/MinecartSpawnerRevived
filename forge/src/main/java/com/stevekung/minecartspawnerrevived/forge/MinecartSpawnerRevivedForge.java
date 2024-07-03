@@ -18,7 +18,7 @@ public class MinecartSpawnerRevivedForge
 {
     private static final int PROTOCOL_VERSION = 1;
     private static int ID = 0;
-    public static final SimpleChannel INSTANCE = ChannelBuilder.named(new ResourceLocation(MinecartSpawnerRevived.MOD_ID, "main")).clientAcceptedVersions(Channel.VersionTest.exact(PROTOCOL_VERSION)).serverAcceptedVersions(Channel.VersionTest.exact(PROTOCOL_VERSION)).networkProtocolVersion(PROTOCOL_VERSION).simpleChannel();
+    public static final SimpleChannel INSTANCE = ChannelBuilder.named(ResourceLocation.fromNamespaceAndPath(MinecartSpawnerRevived.MOD_ID, "main")).clientAcceptedVersions(Channel.VersionTest.exact(PROTOCOL_VERSION)).serverAcceptedVersions(Channel.VersionTest.exact(PROTOCOL_VERSION)).networkProtocolVersion(PROTOCOL_VERSION).simpleChannel();
 
     public MinecartSpawnerRevivedForge()
     {
