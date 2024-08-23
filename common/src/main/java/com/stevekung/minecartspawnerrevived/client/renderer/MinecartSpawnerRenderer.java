@@ -1,12 +1,14 @@
 package com.stevekung.minecartspawnerrevived.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.stevekung.minecartspawnerrevived.client.SpawnerMinecartRenderState;
+
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.SpawnerRenderer;
+import net.minecraft.client.renderer.entity.AbstractMinecartRenderer;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.MinecartRenderer;
 import net.minecraft.world.entity.vehicle.MinecartSpawner;
 
 /**
@@ -14,7 +16,7 @@ import net.minecraft.world.entity.vehicle.MinecartSpawner;
  *
  * <p>Re-added mob renderer for the Spawner Minecart.</p>
  */
-public class MinecartSpawnerRenderer extends MinecartRenderer<MinecartSpawner>
+public class MinecartSpawnerRenderer extends AbstractMinecartRenderer<MinecartSpawner, SpawnerMinecartRenderState>
 {
     private final EntityRenderDispatcher entityRenderer;
 
@@ -25,19 +27,34 @@ public class MinecartSpawnerRenderer extends MinecartRenderer<MinecartSpawner>
     }
 
     @Override
-    public void render(MinecartSpawner minecartSpawner, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight)
+    public void render(SpawnerMinecartRenderState renderState, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight)
     {
-        super.render(minecartSpawner, entityYaw, partialTicks, poseStack, bufferSource, packedLight);
+        super.render(renderState, poseStack, bufferSource, packedLight);
         poseStack.pushPose();
         poseStack.translate(-0.5F, 0.0F, -0.5F);
-        var baseSpawner = minecartSpawner.getSpawner();
-        var entity = baseSpawner.getOrCreateDisplayEntity(minecartSpawner.level(), minecartSpawner.blockPosition());
+        var entity = renderState.displayEntity;
 
         if (entity != null)
         {
-            SpawnerRenderer.renderEntityInSpawner(partialTicks, poseStack, bufferSource, packedLight, entity, this.entityRenderer, baseSpawner.getoSpin(), baseSpawner.getSpin());
+            SpawnerRenderer.renderEntityInSpawner(renderState.ageInTicks, poseStack, bufferSource, packedLight, entity, this.entityRenderer, renderState.oSpin, renderState.spin);
         }
 
         poseStack.popPose();
+    }
+
+    @Override
+    public SpawnerMinecartRenderState createRenderState()
+    {
+        return new SpawnerMinecartRenderState();
+    }
+
+    @Override
+    public void extractRenderState(MinecartSpawner spawner, SpawnerMinecartRenderState renderState, float partialTicks)
+    {
+        super.extractRenderState(spawner, renderState, partialTicks);
+        var baseSpawner = spawner.getSpawner();
+        renderState.displayEntity = baseSpawner.getOrCreateDisplayEntity(spawner.level(), spawner.blockPosition());
+        renderState.oSpin = baseSpawner.getoSpin();
+        renderState.spin = baseSpawner.getSpin();
     }
 }

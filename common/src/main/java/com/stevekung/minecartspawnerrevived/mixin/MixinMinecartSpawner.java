@@ -54,7 +54,7 @@ public abstract class MixinMinecartSpawner extends AbstractMinecart
             this.level().gameEvent(player, GameEvent.ENTITY_INTERACT, this.blockPosition());
             itemStack.shrink(1);
             Platform.sendPacketOnInteract(thisEntity);
-            return InteractionResult.sidedSuccess(this.level().isClientSide());
+            return InteractionResult.SUCCESS;
         }
         return super.interact(player, hand);
     }
