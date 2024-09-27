@@ -25,15 +25,11 @@ public abstract class MixinMinecartSpawner extends AbstractMinecart
      * <p>Add experience drop when Spawner Minecart is destroyed. Same as regular spawner block.</p>
      */
     @Override
-    public void destroy(DamageSource damageSource)
+    public void destroy(ServerLevel serverLevel, DamageSource damageSource)
     {
-        super.destroy(damageSource);
-
-        if (!this.level().isClientSide())
-        {
-            var i = 20 + this.random.nextInt(20) + this.random.nextInt(20);
-            ExperienceOrb.award((ServerLevel) this.level(), this.position(), i);
-        }
+        super.destroy(serverLevel, damageSource);
+        var i = 20 + this.random.nextInt(20) + this.random.nextInt(20);
+        ExperienceOrb.award(serverLevel, this.position(), i);
     }
 
     /**
