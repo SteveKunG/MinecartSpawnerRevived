@@ -17,10 +17,10 @@ public class MinecartSpawnerRevivedForge
     private static int ID = 0;
     public static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(new ResourceLocation(MinecartSpawnerRevived.MOD_ID, "main"), () -> PROTOCOL_VERSION, PROTOCOL_VERSION::equals, PROTOCOL_VERSION::equals);
 
-    public MinecartSpawnerRevivedForge()
+    public MinecartSpawnerRevivedForge(FMLJavaModLoadingContext context)
     {
         MinecartSpawnerRevived.init();
-        var modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        var modEventBus = context.getModEventBus();
         modEventBus.addListener(this::commonSetup);
     }
 
@@ -32,7 +32,12 @@ public class MinecartSpawnerRevivedForge
 
     public static void sendToClient(Object packet, ServerPlayer player)
     {
-        INSTANCE.sendTo(packet, player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+        var connection = player.connection.connection;
+
+        if (INSTANCE.isRemotePresent(connection))
+        {
+            INSTANCE.sendTo(packet, connection, NetworkDirection.PLAY_TO_CLIENT);
+        }
     }
 
     public static void sendToServer(Object packet)

@@ -8,7 +8,9 @@ public class PlatformClientImpl
 {
     public static void sendSpawnDataRequestOnLoad(int entityId)
     {
-        if (Minecraft.getInstance().getConnection() != null)
+        var connection = Minecraft.getInstance().getConnection();
+
+        if (connection != null && MinecartSpawnerRevivedForge.INSTANCE.isRemotePresent(connection.getConnection()))
         {
             MinecartSpawnerRevivedForge.sendToServer(new RequestSpawnDataPacket(entityId));
         }

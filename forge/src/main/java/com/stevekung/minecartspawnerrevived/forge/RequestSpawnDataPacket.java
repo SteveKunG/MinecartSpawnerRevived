@@ -55,6 +55,10 @@ public class RequestSpawnDataPacket
 
         var compound = new CompoundTag();
         compound.put(BaseSpawner.SPAWN_DATA_TAG, SpawnData.CODEC.encodeStart(NbtOps.INSTANCE, spawnData).result().orElseThrow(() -> new IllegalStateException("Invalid SpawnData")));
-        MinecartSpawnerRevivedForge.sendToClient(new SendSpawnDataPacket(entityId, compound), player);
+
+        if (MinecartSpawnerRevivedForge.INSTANCE.isRemotePresent(player.connection.connection))
+        {
+            MinecartSpawnerRevivedForge.sendToClient(new SendSpawnDataPacket(entityId, compound), player);
+        }
     }
 }
