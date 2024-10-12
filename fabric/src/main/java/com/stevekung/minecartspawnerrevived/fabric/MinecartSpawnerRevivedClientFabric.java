@@ -1,5 +1,6 @@
 package com.stevekung.minecartspawnerrevived.fabric;
 
+import com.stevekung.minecartspawnerrevived.MinecartSpawnerRevived;
 import com.stevekung.minecartspawnerrevived.RequestSpawnDataPacket;
 import com.stevekung.minecartspawnerrevived.SendSpawnDataPacket;
 import com.stevekung.minecartspawnerrevived.client.ClientPacket;
@@ -17,7 +18,10 @@ public class MinecartSpawnerRevivedClientFabric
 
     public static void sendSpawnDataRequest(int entityId)
     {
-        ClientPlayNetworking.send(new RequestSpawnDataPacket(entityId));
+        if (ClientPlayNetworking.canSend(MinecartSpawnerRevived.REQUEST_SPAWNDATA))
+        {
+            ClientPlayNetworking.send(new RequestSpawnDataPacket(entityId));
+        }
     }
 
     public static void setSpawnerDisplay(SendSpawnDataPacket packet, ClientPlayNetworking.Context context)
