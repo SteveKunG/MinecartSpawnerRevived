@@ -52,6 +52,10 @@ public class MinecartSpawnerRevivedFabric
         var compound = new CompoundTag();
         compound.put(BaseSpawner.SPAWN_DATA_TAG, SpawnData.CODEC.encodeStart(NbtOps.INSTANCE, spawnData).result().orElseThrow(() -> new IllegalStateException("Invalid SpawnData")));
         packetByteBuf.writeNbt(compound);
-        ServerPlayNetworking.send(player, MinecartSpawnerRevived.SEND_SPAWNDATA, packetByteBuf);
+
+        if (ServerPlayNetworking.canSend(player, MinecartSpawnerRevived.SEND_SPAWNDATA))
+        {
+            ServerPlayNetworking.send(player, MinecartSpawnerRevived.SEND_SPAWNDATA, packetByteBuf);
+        }
     }
 }

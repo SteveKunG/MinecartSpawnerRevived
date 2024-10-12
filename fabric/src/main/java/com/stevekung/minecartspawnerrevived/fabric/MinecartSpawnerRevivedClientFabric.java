@@ -20,7 +20,11 @@ public class MinecartSpawnerRevivedClientFabric
     {
         var buff = PacketByteBufs.create();
         buff.writeVarInt(entityId);
-        ClientPlayNetworking.send(MinecartSpawnerRevived.REQUEST_SPAWNDATA, buff);
+
+        if (ClientPlayNetworking.canSend(MinecartSpawnerRevived.REQUEST_SPAWNDATA))
+        {
+            ClientPlayNetworking.send(MinecartSpawnerRevived.REQUEST_SPAWNDATA, buff);
+        }
     }
 
     public static void setSpawnerDisplay(Minecraft minecraft, ClientPacketListener listener, FriendlyByteBuf buf, PacketSender responseSender)
