@@ -1,5 +1,5 @@
 # MinecartSpawnerRevived
-Reviving Minecart Spawner with care and bug fixes!
+Reviving Minecart Spawner with bug fixes and small improvements!!
 
 Support with Minecraft 1.20.x/1.21.x for Fabric (Quilt maybe?)/Forge
 
