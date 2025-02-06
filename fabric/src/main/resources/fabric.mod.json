@@ -1,9 +1,9 @@
 {
     "schemaVersion": 1,
-    "id": "minecartspawnerrevived",
+    "id": "${mod_id}",
     "version": "${version}",
-    "name": "Minecart Spawner Revived",
-    "description": "Reviving Minecart Spawner with bug fixes and small improvements!",
+    "name": "${display_name}",
+    "description": "${mod_description}",
     "authors": [
         "SteveKunG"
     ],
