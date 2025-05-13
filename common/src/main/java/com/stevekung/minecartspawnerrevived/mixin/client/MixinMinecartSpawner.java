@@ -8,12 +8,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import com.stevekung.minecartspawnerrevived.client.PlatformClient;
 import com.stevekung.minecartspawnerrevived.client.renderer.SpawnerClientTicker;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.entity.vehicle.MinecartSpawner;
 import net.minecraft.world.level.BaseSpawner;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
 
 @Mixin(MinecartSpawner.class)
 public abstract class MixinMinecartSpawner extends AbstractMinecart
@@ -29,7 +29,7 @@ public abstract class MixinMinecartSpawner extends AbstractMinecart
      * <p>Re-send a request SpawnData packet to the server when modifying spawner minecart data.</p>
      */
     @Inject(method = "readAdditionalSaveData", at = @At("TAIL"))
-    private void msr$resendSpawnDataRequestOnLoad(CompoundTag compound, CallbackInfo info)
+    private void msr$resendSpawnDataRequestOnLoad(ValueInput valueInput, CallbackInfo info)
     {
         PlatformClient.sendSpawnDataRequestOnLoad(this.getId());
     }
