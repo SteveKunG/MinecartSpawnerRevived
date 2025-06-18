@@ -22,7 +22,7 @@ public abstract class MixinMinecartSpawner extends AbstractMinecart
     }
 
     /**
-     * <p>Add experience drop when Spawner Minecart is destroyed. Same as regular spawner block.</p>
+     * <p>Add experience drops when Spawner Minecart is destroyed. Same as regular spawner block.</p>
      */
     @Override
     public void destroy(ServerLevel serverLevel, DamageSource damageSource)
