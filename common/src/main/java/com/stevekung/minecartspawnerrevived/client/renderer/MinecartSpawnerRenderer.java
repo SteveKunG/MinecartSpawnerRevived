@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.stevekung.minecartspawnerrevived.client.SpawnerMinecartRenderState;
 
 import net.minecraft.client.model.geom.ModelLayerLocation;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.SpawnerRenderer;
 import net.minecraft.client.renderer.entity.AbstractMinecartRenderer;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
@@ -27,16 +27,16 @@ public class MinecartSpawnerRenderer extends AbstractMinecartRenderer<MinecartSp
     }
 
     @Override
-    public void render(SpawnerMinecartRenderState renderState, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight)
+    public void submit(SpawnerMinecartRenderState renderState, PoseStack poseStack, SubmitNodeCollector submitNodeCollector)
     {
-        super.render(renderState, poseStack, bufferSource, packedLight);
+        super.submit(renderState, poseStack, submitNodeCollector);
         poseStack.pushPose();
         poseStack.translate(-0.5F, 0.0F, -0.5F);
         var entity = renderState.displayEntity;
 
         if (entity != null)
         {
-            SpawnerRenderer.renderEntityInSpawner(renderState.ageInTicks, poseStack, bufferSource, packedLight, entity, this.entityRenderer, renderState.oSpin, renderState.spin);
+            SpawnerRenderer.renderEntityInSpawner(renderState.ageInTicks, poseStack, null, entity, this.entityRenderer, renderState.oSpin, renderState.spin);
         }
 
         poseStack.popPose();
