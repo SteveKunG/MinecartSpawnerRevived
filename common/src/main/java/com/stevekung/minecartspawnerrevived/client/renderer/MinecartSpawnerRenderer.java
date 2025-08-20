@@ -36,7 +36,7 @@ public class MinecartSpawnerRenderer extends AbstractMinecartRenderer<MinecartSp
 
         if (entity != null)
         {
-            SpawnerRenderer.renderEntityInSpawner(renderState.ageInTicks, poseStack, null, entity, this.entityRenderer, renderState.oSpin, renderState.spin);
+            SpawnerRenderer.submitEntityInSpawner(renderState.ageInTicks, poseStack, submitNodeCollector, entity, this.entityRenderer, renderState.oSpin, renderState.spin);
         }
 
         poseStack.popPose();
