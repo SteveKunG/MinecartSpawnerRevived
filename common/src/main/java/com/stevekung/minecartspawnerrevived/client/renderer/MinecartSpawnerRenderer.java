@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.stevekung.minecartspawnerrevived.client.SpawnerMinecartRenderState;
 
 import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.SpawnerRenderer;
 import net.minecraft.client.renderer.entity.AbstractMinecartRenderer;
@@ -36,7 +37,8 @@ public class MinecartSpawnerRenderer extends AbstractMinecartRenderer<MinecartSp
 
         if (entity != null)
         {
-            SpawnerRenderer.submitEntityInSpawner(renderState.ageInTicks, poseStack, submitNodeCollector, entity, this.entityRenderer, renderState.oSpin, renderState.spin);
+            var color = LevelRenderer.getLightColor(entity.level(), entity.blockPosition());
+            SpawnerRenderer.submitEntityInSpawner(renderState.ageInTicks, poseStack, submitNodeCollector, entity, this.entityRenderer, renderState.oSpin, renderState.spin, color);
         }
 
         poseStack.popPose();
