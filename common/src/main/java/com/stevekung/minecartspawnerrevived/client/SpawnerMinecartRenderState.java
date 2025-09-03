@@ -6,6 +6,6 @@ import net.minecraft.world.entity.Entity;
 public class SpawnerMinecartRenderState extends MinecartRenderState
 {
     public Entity displayEntity;
-    public double oSpin;
-    public double spin;
+    public float spin;
+    public float scale;
 }

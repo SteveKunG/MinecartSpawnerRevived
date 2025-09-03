@@ -29,7 +29,7 @@ public class MinecartSpawnerRevivedFabric
         var player = context.player();
 
         // Make sure to run on the server thread because we use level.getRandom() to get SpawnData from the server side. This will prevent "Accessing LegacyRandomSource from multiple threads" error.
-        player.getServer().execute(() ->
+        context.server().execute(() ->
         {
             var spawner = (MinecartSpawner) player.level().getEntity(entityId);
 

@@ -4,12 +4,12 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.stevekung.minecartspawnerrevived.client.SpawnerMinecartRenderState;
 
 import net.minecraft.client.model.geom.ModelLayerLocation;
-import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.SpawnerRenderer;
 import net.minecraft.client.renderer.entity.AbstractMinecartRenderer;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.vehicle.MinecartSpawner;
 
 /**
@@ -37,8 +37,7 @@ public class MinecartSpawnerRenderer extends AbstractMinecartRenderer<MinecartSp
 
         if (entity != null)
         {
-            var color = LevelRenderer.getLightColor(entity.level(), entity.blockPosition());
-            SpawnerRenderer.submitEntityInSpawner(renderState.ageInTicks, poseStack, submitNodeCollector, entity, this.entityRenderer, renderState.oSpin, renderState.spin, color);
+            SpawnerRenderer.submitEntityInSpawner(poseStack, submitNodeCollector, renderState, this.entityRenderer, renderState.spin, renderState.scale);
         }
 
         poseStack.popPose();
@@ -56,7 +55,7 @@ public class MinecartSpawnerRenderer extends AbstractMinecartRenderer<MinecartSp
         super.extractRenderState(spawner, renderState, partialTicks);
         var baseSpawner = spawner.getSpawner();
         renderState.displayEntity = baseSpawner.getOrCreateDisplayEntity(spawner.level(), spawner.blockPosition());
-        renderState.oSpin = baseSpawner.getoSpin();
-        renderState.spin = baseSpawner.getSpin();
+        renderState.spin = (float) Mth.lerp(partialTicks, baseSpawner.getOSpin(), baseSpawner.getSpin()) * 10.0F;
+        renderState.scale = 0.53125F;
     }
 }
