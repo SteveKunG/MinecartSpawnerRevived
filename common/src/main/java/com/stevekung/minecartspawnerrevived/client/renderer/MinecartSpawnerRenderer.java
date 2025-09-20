@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.blockentity.SpawnerRenderer;
 import net.minecraft.client.renderer.entity.AbstractMinecartRenderer;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.vehicle.MinecartSpawner;
 
@@ -28,16 +29,16 @@ public class MinecartSpawnerRenderer extends AbstractMinecartRenderer<MinecartSp
     }
 
     @Override
-    public void submit(SpawnerMinecartRenderState renderState, PoseStack poseStack, SubmitNodeCollector submitNodeCollector)
+    public void submit(SpawnerMinecartRenderState renderState, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState cameraRenderState)
     {
-        super.submit(renderState, poseStack, submitNodeCollector);
+        super.submit(renderState, poseStack, submitNodeCollector, cameraRenderState);
         poseStack.pushPose();
         poseStack.translate(-0.5F, 0.0F, -0.5F);
-        var entity = renderState.displayEntity;
+        var entityRenderState = renderState.displayEntity;
 
-        if (entity != null)
+        if (entityRenderState != null)
         {
-            SpawnerRenderer.submitEntityInSpawner(poseStack, submitNodeCollector, renderState, this.entityRenderer, renderState.spin, renderState.scale);
+            SpawnerRenderer.submitEntityInSpawner(poseStack, submitNodeCollector, entityRenderState, this.entityRenderer, renderState.spin, renderState.scale, cameraRenderState);
         }
 
         poseStack.popPose();
@@ -54,8 +55,13 @@ public class MinecartSpawnerRenderer extends AbstractMinecartRenderer<MinecartSp
     {
         super.extractRenderState(spawner, renderState, partialTicks);
         var baseSpawner = spawner.getSpawner();
-        renderState.displayEntity = baseSpawner.getOrCreateDisplayEntity(spawner.level(), spawner.blockPosition());
-        renderState.spin = (float) Mth.lerp(partialTicks, baseSpawner.getOSpin(), baseSpawner.getSpin()) * 10.0F;
-        renderState.scale = 0.53125F;
+        var entity = baseSpawner.getOrCreateDisplayEntity(spawner.level(), spawner.blockPosition());
+
+        if (entity != null)
+        {
+            renderState.displayEntity = this.entityRenderer.extractEntity(baseSpawner.getOrCreateDisplayEntity(spawner.level(), spawner.blockPosition()), partialTicks);
+            renderState.spin = (float) Mth.lerp(partialTicks, baseSpawner.getOSpin(), baseSpawner.getSpin()) * 10.0F;
+            renderState.scale = 0.53125F;
+        }
     }
 }
