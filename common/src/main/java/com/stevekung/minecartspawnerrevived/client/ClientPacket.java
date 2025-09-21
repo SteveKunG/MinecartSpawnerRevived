@@ -19,20 +19,20 @@ public class ClientPacket
         var minecraft = Minecraft.getInstance();
         var level = minecraft.level;
 
-        minecraft.execute(() ->
+        if (level != null)
         {
-            if (level != null)
+            minecraft.execute(() ->
             {
                 var spawner = (MinecartSpawner) level.getEntity(entityId);
 
-                if (spawner == null || compoundTag == null)
+                if (spawner == null)
                 {
                     return;
                 }
 
                 var spawnData = SpawnData.CODEC.parse(NbtOps.INSTANCE, compoundTag.getCompound(BaseSpawner.SPAWN_DATA_TAG).orElseThrow()).resultOrPartial(string -> MinecartSpawnerRevived.LOGGER.warn("Invalid SpawnData: {}", string)).orElseGet(SpawnData::new);
                 spawner.getSpawner().displayEntity = EntityType.loadEntityRecursive(spawnData.entityToSpawn(), level, EntitySpawnReason.SPAWNER, Function.identity());
-            }
-        });
+            });
+        }
     }
 }

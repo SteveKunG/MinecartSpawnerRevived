@@ -59,7 +59,7 @@ public class MinecartSpawnerRenderer extends AbstractMinecartRenderer<MinecartSp
 
         if (entity != null)
         {
-            renderState.displayEntity = this.entityRenderer.extractEntity(baseSpawner.getOrCreateDisplayEntity(spawner.level(), spawner.blockPosition()), partialTicks);
+            renderState.displayEntity = this.entityRenderer.extractEntity(entity, partialTicks);
             renderState.spin = (float) Mth.lerp(partialTicks, baseSpawner.getOSpin(), baseSpawner.getSpin()) * 10.0F;
             renderState.scale = 0.53125F;
         }
