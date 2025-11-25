@@ -2,7 +2,7 @@ package com.stevekung.minecartspawnerrevived.fabric;
 
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.vehicle.MinecartSpawner;
+import net.minecraft.world.entity.vehicle.minecart.MinecartSpawner;
 
 public class PlatformImpl
 {

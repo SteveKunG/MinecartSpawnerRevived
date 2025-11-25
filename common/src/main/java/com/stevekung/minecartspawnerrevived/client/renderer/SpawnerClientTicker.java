@@ -1,6 +1,6 @@
 package com.stevekung.minecartspawnerrevived.client.renderer;
 
-import net.minecraft.world.entity.vehicle.MinecartSpawner;
+import net.minecraft.world.entity.vehicle.minecart.MinecartSpawner;
 import net.minecraft.world.level.Level;
 
 public interface SpawnerClientTicker

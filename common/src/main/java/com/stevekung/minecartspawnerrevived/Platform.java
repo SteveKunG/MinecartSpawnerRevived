@@ -1,7 +1,8 @@
 package com.stevekung.minecartspawnerrevived;
 
+import net.minecraft.world.entity.vehicle.minecart.MinecartSpawner;
+
 import dev.architectury.injectables.annotations.ExpectPlatform;
-import net.minecraft.world.entity.vehicle.MinecartSpawner;
 
 public class Platform
 {
