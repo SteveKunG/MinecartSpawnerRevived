@@ -1,7 +1,7 @@
 package com.stevekung.minecartspawnerrevived.neoforge;
 
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.vehicle.MinecartSpawner;
+import net.minecraft.world.entity.vehicle.minecart.MinecartSpawner;
 
 public class PlatformImpl
 {
