@@ -51,7 +51,7 @@ public abstract class MixinMinecartSpawner extends AbstractMinecart
      *
      * <p>Fix Spawner Minecart particles position.</p>
      */
-    @Redirect(method = "method_31554", at = @At(value = "INVOKE", target = "net/minecraft/world/level/BaseSpawner.clientTick(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;)V"))
+    @Redirect(method = {"method_31554", "lambda$createTicker$1"}, at = @At(value = "INVOKE", target = "net/minecraft/world/level/BaseSpawner.clientTick(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;)V"), require = 0)
     private void msr$createClientTicker(BaseSpawner spawner, Level level, BlockPos pos)
     {
         ((SpawnerClientTicker) spawner).msr$clientTick(level, MinecartSpawner.class.cast(this));
