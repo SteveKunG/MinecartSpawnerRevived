@@ -21,6 +21,6 @@ config = "mixins.minecartspawnerrevived.json"
 [[dependencies.minecartspawnerrevived]]
 modId = "minecraft"
 type = "required"
-versionRange = "[1.21.9,)"
+versionRange = "[26.1,)"
 ordering = "NONE"
 side = "BOTH"

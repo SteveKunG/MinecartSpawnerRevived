@@ -1,5 +1,6 @@
 package com.stevekung.minecartspawnerrevived.mixin;
 
+import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
 import com.stevekung.minecartspawnerrevived.Platform;
 import net.minecraft.server.level.ServerLevel;
@@ -38,20 +39,20 @@ public abstract class MixinMinecartSpawner extends AbstractMinecart
      * <p>Fix Spawn Eggs cannot be used on Spawner Minecart to change entity to spawn.</p>
      */
     @Override
-    public InteractionResult interact(Player player, InteractionHand hand)
+    public InteractionResult interact(Player player, InteractionHand hand, Vec3 location)
     {
         var thisEntity = MinecartSpawner.class.cast(this);
         var itemStack = player.getItemInHand(hand);
 
-        if (itemStack.getItem() instanceof SpawnEggItem spawnEgg)
+        if (itemStack.getItem() instanceof SpawnEggItem)
         {
-            var entityType = spawnEgg.getType(itemStack);
+            var entityType = SpawnEggItem.getType(itemStack);
             thisEntity.getSpawner().setEntityId(entityType, this.level(), this.level().getRandom(), this.blockPosition());
             this.level().gameEvent(player, GameEvent.ENTITY_INTERACT, this.blockPosition());
             itemStack.shrink(1);
             Platform.sendPacketOnInteract(thisEntity);
             return InteractionResult.SUCCESS;
         }
-        return super.interact(player, hand);
+        return super.interact(player, hand, location);
     }
 }

@@ -17,8 +17,8 @@ public class MinecartSpawnerRevivedFabric
     public static void init()
     {
         MinecartSpawnerRevived.init();
-        PayloadTypeRegistry.playC2S().register(RequestSpawnDataPacket.TYPE, RequestSpawnDataPacket.CODEC);
-        PayloadTypeRegistry.playS2C().register(SendSpawnDataPacket.TYPE, SendSpawnDataPacket.CODEC);
+        PayloadTypeRegistry.serverboundPlay().register(RequestSpawnDataPacket.TYPE, RequestSpawnDataPacket.CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(SendSpawnDataPacket.TYPE, SendSpawnDataPacket.CODEC);
 
         ServerPlayNetworking.registerGlobalReceiver(RequestSpawnDataPacket.TYPE, MinecartSpawnerRevivedFabric::requestSpawnData);
     }
