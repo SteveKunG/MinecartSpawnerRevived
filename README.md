@@ -1,7 +1,7 @@
 # MinecartSpawnerRevived
 Reviving Minecart Spawner with bug fixes and small improvements!
 
-Support with Minecraft 1.20.x/1.21.x for Fabric (Quilt maybe?)/Forge
+Support with Minecraft 1.20.x-26.1.x for Fabric/NeoForge
 
 Download on [Modrinth](https://modrinth.com/mod/minecart-spawner-revived)/[CurseForge](https://curseforge.com/minecraft/mc-mods/minecart-spawner-revived)
 
