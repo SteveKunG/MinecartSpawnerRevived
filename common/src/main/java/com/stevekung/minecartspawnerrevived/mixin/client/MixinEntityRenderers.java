@@ -21,7 +21,7 @@ import net.minecraft.world.entity.vehicle.minecart.MinecartSpawner;
 @Mixin(EntityRenderers.class)
 public class MixinEntityRenderers
 {
-    @ModifyArg(method = "<clinit>", at = @At(value = "INVOKE", target = "net/minecraft/client/renderer/entity/EntityRenderers.register(Lnet/minecraft/world/entity/EntityType;Lnet/minecraft/client/renderer/entity/EntityRendererProvider;)V"), index = 1, slice = @Slice(from = @At(value = "FIELD", target = "net/minecraft/world/entity/EntityType.SPAWNER_MINECART:Lnet/minecraft/world/entity/EntityType;"), to = @At(value = "FIELD", target = "net/minecraft/world/entity/EntityType.SPECTRAL_ARROW:Lnet/minecraft/world/entity/EntityType;")))
+    @ModifyArg(method = "<clinit>", at = @At(value = "INVOKE", target = "net/minecraft/client/renderer/entity/EntityRenderers.register(Lnet/minecraft/world/entity/EntityType;Lnet/minecraft/client/renderer/entity/EntityRendererProvider;)V"), index = 1, slice = @Slice(from = @At(value = "FIELD", target = "net/minecraft/world/entity/EntityTypes.SPAWNER_MINECART:Lnet/minecraft/world/entity/EntityType;"), to = @At(value = "FIELD", target = "net/minecraft/world/entity/EntityTypes.SPECTRAL_ARROW:Lnet/minecraft/world/entity/EntityType;")))
     private static <T extends Entity> EntityRendererProvider<MinecartSpawner> msr$fixSpawnerMinecartRenderer(EntityRendererProvider<T> original)
     {
         return context -> new MinecartSpawnerRenderer(context, ModelLayers.SPAWNER_MINECART);
