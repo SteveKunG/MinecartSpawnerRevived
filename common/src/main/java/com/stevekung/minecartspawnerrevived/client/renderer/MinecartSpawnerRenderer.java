@@ -59,6 +59,7 @@ public class MinecartSpawnerRenderer extends AbstractMinecartRenderer<MinecartSp
 
         if (entity != null)
         {
+            entity.setId(-1);
             renderState.displayEntity = this.entityRenderer.extractEntity(entity, partialTicks);
             renderState.displayEntity.lightCoords = renderState.lightCoords;
             renderState.spin = (float) Mth.lerp(partialTicks, baseSpawner.getOSpin(), baseSpawner.getSpin()) * 10.0F;

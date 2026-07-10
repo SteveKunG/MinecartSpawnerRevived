@@ -1,6 +1,7 @@
 package com.stevekung.minecartspawnerrevived.mixin.client;
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -31,7 +32,7 @@ public abstract class MixinMinecartSpawner extends AbstractMinecart
     @Inject(method = "readAdditionalSaveData", at = @At("TAIL"))
     private void msr$resendSpawnDataRequestOnLoad(ValueInput valueInput, CallbackInfo info)
     {
-        PlatformClient.sendSpawnDataRequestOnLoad(this.getId());
+        this.attemptToGetEntityIdAndSendPacket();
     }
 
     /**
@@ -43,7 +44,7 @@ public abstract class MixinMinecartSpawner extends AbstractMinecart
     public void recreateFromPacket(ClientboundAddEntityPacket packet)
     {
         super.recreateFromPacket(packet);
-        PlatformClient.sendSpawnDataRequestOnLoad(this.getId());
+        this.attemptToGetEntityIdAndSendPacket();
     }
 
     /**
@@ -51,9 +52,28 @@ public abstract class MixinMinecartSpawner extends AbstractMinecart
      *
      * <p>Fix Spawner Minecart particles position.</p>
      */
-    @Redirect(method = {"method_31554", "lambda$createTicker$1"}, at = @At(value = "INVOKE", target = "net/minecraft/world/level/BaseSpawner.clientTick(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;)V"), require = 0)
+    @Redirect(method = "lambda$createTicker$1", at = @At(value = "INVOKE", target = "net/minecraft/world/level/BaseSpawner.clientTick(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;)V"), require = 0)
     private void msr$createClientTicker(BaseSpawner spawner, Level level, BlockPos pos)
     {
         ((SpawnerClientTicker) spawner).msr$clientTick(level, MinecartSpawner.class.cast(this));
+    }
+
+    @Unique
+    private void attemptToGetEntityIdAndSendPacket()
+    {
+        // An ID for display entity only
+        var entityId = -1;
+
+        try
+        {
+            // Attempt to get actual Entity ID of this entity
+            entityId = this.getId();
+        }
+        catch (IllegalStateException e)
+        {
+            // Fallback: In case of Spawner Minecart inside Spawner Minecart
+            entityId = -1;
+        }
+        PlatformClient.sendSpawnDataRequestOnLoad(entityId);
     }
 }
