@@ -69,7 +69,7 @@ public abstract class MixinMinecartSpawner extends AbstractMinecart
             // Attempt to get actual Entity ID of this entity
             entityId = this.getId();
         }
-        catch (IllegalStateException e)
+        catch (IllegalStateException _)
         {
             // Fallback: In case of Spawner Minecart inside Spawner Minecart
             entityId = -1;

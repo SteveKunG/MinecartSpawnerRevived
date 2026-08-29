@@ -17,15 +17,10 @@ public class RequestSpawnDataPacketNeoForge
     {
         context.enqueueWork(() ->
         {
-            if (context.player() instanceof ServerPlayer player)
+            if (context.player() instanceof ServerPlayer player && player.level().getEntity(packet.entityId()) instanceof MinecartSpawner spawner)
             {
-                var spawner = (MinecartSpawner) player.level().getEntity(packet.entityId());
-
-                if (spawner != null)
-                {
-                    var level = spawner.level();
-                    sendSpawnDataPacket(player, packet.entityId(), spawner.getSpawner().getOrCreateNextSpawnData(level, level.getRandom(), spawner.blockPosition()));
-                }
+                var level = spawner.level();
+                sendSpawnDataPacket(player, packet.entityId(), spawner.getSpawner().getOrCreateNextSpawnData(level, level.getRandom(), spawner.blockPosition()));
             }
         });
     }

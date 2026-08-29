@@ -18,20 +18,15 @@ public class ClientPacket
         var minecraft = Minecraft.getInstance();
         var level = minecraft.level;
 
-        if (level != null)
+        minecraft.execute(() ->
         {
-            minecraft.execute(() ->
+            if (level == null || !(level.getEntity(entityId) instanceof MinecartSpawner spawner))
             {
-                var spawner = (MinecartSpawner) level.getEntity(entityId);
+                return;
+            }
 
-                if (spawner == null)
-                {
-                    return;
-                }
-
-                var spawnData = SpawnData.CODEC.parse(NbtOps.INSTANCE, compoundTag.getCompound(BaseSpawner.SPAWN_DATA_TAG).orElseThrow()).resultOrPartial(string -> MinecartSpawnerRevived.LOGGER.warn("Invalid SpawnData: {}", string)).orElseGet(SpawnData::new);
-                spawner.getSpawner().displayEntity = EntityType.loadEntityRecursive(spawnData.entityToSpawn(), level, new EntitySpawnRequest(EntitySpawnReason.SPAWNER, true), BaseSpawner.SET_DISPLAY_ENTITY_ID);
-            });
-        }
+            var spawnData = SpawnData.CODEC.parse(NbtOps.INSTANCE, compoundTag.getCompound(BaseSpawner.SPAWN_DATA_TAG).orElseThrow()).resultOrPartial(string -> MinecartSpawnerRevived.LOGGER.warn("Invalid SpawnData: {}", string)).orElseGet(SpawnData::new);
+            spawner.getSpawner().displayEntity = EntityType.loadEntityRecursive(spawnData.entityToSpawn(), level, new EntitySpawnRequest(EntitySpawnReason.SPAWNER, true), BaseSpawner.SET_DISPLAY_ENTITY_ID);
+        });
     }
 }
