@@ -9,7 +9,7 @@ version = "${version}"
 displayName = "${display_name}"
 description = "${mod_description}"
 displayURL = "https://modrinth.com/mod/minecart-spawner-revived"
-logoFile = "logo.png"
+iconFile = "logo.png"
 authors = "SteveKunG"
 
 [[accessTransformers]]
@@ -21,6 +21,13 @@ config = "mixins.minecartspawnerrevived.json"
 [[dependencies.minecartspawnerrevived]]
 modId = "minecraft"
 type = "required"
-versionRange = "[26.2,)"
+versionRange = "[26.3,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.minecartspawnerrevived]]
+modId = "neoforge"
+type = "required"
+versionRange = "[26.3.0.12-beta,)"
 ordering = "NONE"
 side = "BOTH"

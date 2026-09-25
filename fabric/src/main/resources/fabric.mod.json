@@ -25,8 +25,8 @@
     },
     "depends": {
         "fabric-api": "*",
-        "fabricloader": ">=0.18",
-        "minecraft": ">=26.2"
+        "fabricloader": ">=0.19",
+        "minecraft": ">=26.3"
     },
     "mixins": [
         "mixins.minecartspawnerrevived.json"
