@@ -1,5 +1,6 @@
 package com.stevekung.minecartspawnerrevived.mixin;
 
+import net.minecraft.world.item.component.TypedEntityData;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
 import com.stevekung.minecartspawnerrevived.Platform;
@@ -46,7 +47,7 @@ public abstract class MixinMinecartSpawner extends AbstractMinecart
 
         if (itemStack.getItem() instanceof SpawnEggItem)
         {
-            var entityType = SpawnEggItem.getType(itemStack);
+            var entityType = TypedEntityData.getType(itemStack);
             thisEntity.getSpawner().setEntityId(entityType, this.level(), this.level().getRandom(), this.blockPosition());
             this.level().gameEvent(player, GameEvent.ENTITY_INTERACT, this.blockPosition());
             itemStack.shrink(1);
